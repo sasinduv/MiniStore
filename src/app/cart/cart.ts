@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
-import {RouterOutlet} from '@angular/router';
+import {Component, Input} from '@angular/core';
+import {RouterLink, } from '@angular/router';
 
 @Component({
   selector: 'app-cart',
   imports: [
-    RouterOutlet
+    RouterLink
   ],
   templateUrl: './cart.html',
   styleUrl: './cart.scss',
 })
 export class Cart {
+  protected product: any;
 
 }

@@ -13,6 +13,9 @@ export class Product {
   findAllProducts():Observable<ProductArray[]>{
     return this._http.get<ProductArray[]>(this.baseUrl);
   }
+  findProductById(id:any){
+    return this._http.get(`https://fakestoreapi.com/products/${id}`);
+  }
 }
 
 

@@ -4,6 +4,7 @@ import {Product} from '../services/product';
 import {ProductArray} from '../types/ProductArray';
 import {ProductCard} from '../product-card/product-card';
 import {NgForOf} from '@angular/common';
+import {debounceTime, Subject} from 'rxjs';
 
 @Component({
   selector: 'app-product-list',
@@ -16,15 +17,31 @@ import {NgForOf} from '@angular/common';
 })
 
   export class ProductList implements OnInit {
-  productList:any[]=[]; constructor(private service:Product) { } ngOnInit(): void { this.load(); }
-  load(){ this.service.findAllProducts().subscribe({ next:(res:any)=> { this.productList = res; console.log(this.productList) },
-    error:(err:any)=>{ console.log(err); }
+
+  allProducts:any[]=[];
+  productList:any[]=[];
+
+  searchSubject=new Subject<string>();
+  constructor(private service:Product) { }
+  ngOnInit(): void {
+    this.load();
+    this.searchSubject.pipe(debounceTime(500)) .subscribe(value => this.filterProducts(value))
+  }
+  load(){
+    this.service.findAllProducts().subscribe({
+      next:(res:any)=> {
+    this.productList = res;
+    this.allProducts=res;
+    },
+    error:(err:any)=>{
+    console.log(err);
+  }
   })
   }
 
-  search(event:any){
-    const value=event;
-  }
+  search(searchText:string){ const text=searchText.toLowerCase(); this.searchSubject.next(text); }
+  filterProducts(value:string){
+    this.productList=this.allProducts.filter(p=> p.title.toLowerCase().includes(value) ) }
 }
 
 
